@@ -1,15 +1,29 @@
-import { formatCurrency } from "../../utils/helpers";
+import { useEffect, useState } from 'react';
+import { formatCurrency } from '../../utils/helpers';
 
 function OrderItem({ item, isLoadingIngredients, ingredients }) {
+  const [ingredientsString, setIngredientsString] = useState('');
+
+  useEffect(() => {
+    if (!isLoadingIngredients && ingredients) {
+      setIngredientsString(ingredients.join(','));
+    }
+  }, [ingredients, isLoadingIngredients]);
+
   const { quantity, name, totalPrice } = item;
 
   return (
-    <li>
-      <div>
-        <p>
-          <span>{quantity}&times;</span> {name}
-        </p>
-        <p>{formatCurrency(totalPrice)}</p>
+    <li className="py-3">
+      <div className="flex items-center justify-between gap-4 text-sm">
+        <div className="flex flex-col">
+          <p>
+            <span className="font-bold">{quantity}&times;</span> {name}
+          </p>
+          <p className="pt-2 text-xs capitalize italic tracking-wider text-stone-400">
+            {isLoadingIngredients ? 'Loading...' : ingredientsString}
+          </p>
+        </div>
+        <p className="font-bold">{formatCurrency(totalPrice)}</p>
       </div>
     </li>
   );
